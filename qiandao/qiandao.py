@@ -11,8 +11,8 @@ from bs4 import BeautifulSoup
 import codecs
 
 
-username = 'elecshan'  #你的用户名
-password = 'xgss7163994'  #你的密码
+username = '#######'  #你的用户名
+password = '########'  #你的密码
 data = {'username': username, 'password':password}
 
 def qiandao(data):
