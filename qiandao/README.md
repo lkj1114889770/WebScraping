@@ -81,8 +81,8 @@ tags:
 	day_log = int(lines[-1].split()[0].split('-')[-1])
 	if day_now == day_log:
 	    print(username+'今天签到过了哦')
-	    flag = False
-将配置文件profile.txt和日志文件logging.txt以及代码qiandao.py放入windows的启动运行的文件夹，这个文件夹可以通过在cmd窗口下输入
+
+写一个bat脚本放入windows的启动运行的文件夹，这个文件夹可以通过在cmd窗口下输入
 
 	shell:Startup
 
@@ -91,7 +91,8 @@ tags:
 
 在这个启动文件夹下写一个bat脚本来运行python代码
 
-	cd C:\Users\lkj\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
+	D:
+	cd D:\simulation file\pyCharm\python3\qiandao
 	python qiandao.py
 	pause
 
