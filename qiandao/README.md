@@ -38,23 +38,28 @@ tags:
 
 而后就是一个判断是否登陆成功的程序，依然使用BeautifulSoup来解析，得到已签到之后退出循环，并将日志信息记录到日志文件。
 
+	r = session.post(url=url3, headers=headers, data=qiandao)
     r = BeautifulSoup(r.content,'lxml')
-    message = r.find_all('a',{'href':"signin.php"})[0].contents[0]
-    if message == '已签到': #如果已经签到
+    message1 = r.find_all('a',{'href':"signin.php"})[0].contents[0]
+    message2 = r.find_all('h2')[0].getText()
+    if message2 == '签到成功':
         f = codecs.open('logging.txt', 'a', encoding='utf-8')
-        str= time.strftime('%Y-%m-%d  %H:%M:%S',time.localtime(time.time())) +'-----签到成功'+'\n'
-        f.write(str)  #记录日志信息到日志文件
+        str = time.strftime('%Y-%m-%d  %H:%M:%S', time.localtime(time.time())) + '-----签到成功' + '\n'
+        f.write(str)  # 记录日志信息到日志文件
         f.close()
-        print(r.find_all('span',{'class':'medium'})[0].getText())
-        print(r.find_all('td',{'class':'text'})[-1].getText().split('。')[0])
+        print(r.find_all('span', {'class': 'medium'})[0].getText())
+        print(r.find_all('td', {'class': 'text'})[-1].getText().split('。')[0])
         break
-    if maxtry<30:
-        print('签到失败，第'+str(maxtry)+'次重试')
+    elif message1 == '已签到': #如果已经签到
+        print('已经签到过了哦')
+        break
+    if maxtry < 30:
+        print('签到失败，第'+str(maxtry+1)+'次重试')
+        maxtry = maxtry+1
         time.sleep(5)
     else:
         print("自动签到失败，请手动签到，或者检查网络连接")
         break
-
 
 为了能够开机自动运行程序，将该程序添加至windows启动运行。代码中读取在配置文件中的账户信息，并且通过读取上一次签到成功时间来判断是否成功签到过。
 
@@ -81,8 +86,8 @@ tags:
 	day_log = int(lines[-1].split()[0].split('-')[-1])
 	if day_now == day_log:
 	    print(username+'今天签到过了哦')
-
-写一个bat脚本放入windows的启动运行的文件夹，这个文件夹可以通过在cmd窗口下输入
+	    flag = False
+将配置文件profile.txt和日志文件logging.txt以及代码qiandao.py放入windows的启动运行的文件夹，这个文件夹可以通过在cmd窗口下输入
 
 	shell:Startup
 
@@ -98,7 +103,7 @@ tags:
 
 至此就完整实现了电脑开机自动登陆签到NHD啦。效果如下
 测试结果：
-![](https://i.imgur.com/YCq9I1U.png)
+![](https://i.imgur.com/UgfuNIl.png)
 
 
 完整代码详见个人[github](https://github.com/lkj1114889770/WebScraping/tree/master/qiandao)了。

@@ -24,12 +24,12 @@ day_now = time.localtime(time.time()).tm_mday
 f = codecs.open('logging.txt', 'r', encoding='utf-8')
 lines = f.readlines()
 f.close()
-#######更换账户登陆时，最好清除以前账户的日志信息
+
 try:  #如果第一次使用可能没有签到记录
 	day_log = int(lines[-1].split()[0].split('-')[-1])
 except:
 	day_log=33
-
+ 
 if day_now == day_log:
     print(username+'今天签到过了哦')
     flag = False
@@ -64,17 +64,22 @@ while flag:
     qiandao = {'action':'post','content':'lalala2333'} #签到信息随便填，lalala2333
     r = session.post(url=url3, headers=headers, data=qiandao)
     r = BeautifulSoup(r.content,'lxml')
-    message = r.find_all('a',{'href':"signin.php"})[0].contents[0]
-    if message == '已签到': #如果已经签到
+    message1 = r.find_all('a',{'href':"signin.php"})[0].contents[0]
+    message2 = r.find_all('h2')[0].getText()
+    if message2 == '签到成功':
         f = codecs.open('logging.txt', 'a', encoding='utf-8')
-        str= time.strftime('%Y-%m-%d  %H:%M:%S',time.localtime(time.time())) +'-----签到成功'+'\n'
-        f.write(str)  #记录日志信息到日志文件
+        str = time.strftime('%Y-%m-%d  %H:%M:%S', time.localtime(time.time())) + '-----签到成功' + '\n'
+        f.write(str)  # 记录日志信息到日志文件
         f.close()
-        print(r.find_all('span',{'class':'medium'})[0].getText())
-        print(r.find_all('td',{'class':'text'})[-1].getText().split('。')[0])
+        print(r.find_all('span', {'class': 'medium'})[0].getText())
+        print(r.find_all('td', {'class': 'text'})[-1].getText().split('。')[0])
         break
-    if maxtry<30:
-        print('签到失败，第'+str(maxtry)+'次重试')
+    elif message1 == '已签到': #如果已经签到
+        print('已经签到过了哦')
+        break
+    if maxtry < 30:
+        print('签到失败，第'+str(maxtry+1)+'次重试')
+        maxtry = maxtry+1
         time.sleep(5)
     else:
         print("自动签到失败，请手动签到，或者检查网络连接")
